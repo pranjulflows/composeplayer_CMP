@@ -84,9 +84,9 @@ fun MusicPlayer() {
             }
         }
 
-        KamelImage(){
+//        KamelImage(){
 
-        }
+//        }
 
 
     }
