@@ -19,23 +19,23 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
+        iosX64(), iosArm64(), iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("androidx.media3:media3-exoplayer:1.3.1")
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -66,7 +66,6 @@ kotlin {
             implementation(libs.voyager.bottomSheetNavigator)
             implementation(libs.voyager.transitions)
             implementation(libs.voyager.tabNavigator)
-
 
 
 //            implementation(libs.sandwich)
