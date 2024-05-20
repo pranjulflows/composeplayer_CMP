@@ -47,8 +47,11 @@ kotlin {
 
             implementation(compose.ui)
             implementation(compose.components.resources)
+
             implementation(compose.components.uiToolingPreview)
             implementation(libs.ktorfit.lib)
+            implementation(libs.landscapist.coil3)
+
 //            implementation("de.jensklingenberg.ktorfit:ktorfit-lib-light:$ktorfitVersion")
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktorfit.converters.response)

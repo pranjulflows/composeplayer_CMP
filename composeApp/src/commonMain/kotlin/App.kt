@@ -29,6 +29,7 @@ import io.kamel.image.KamelImage
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ui.PlayerView
 
 @Composable
 @Preview
@@ -80,13 +81,11 @@ fun MusicPlayer() {
                         shape = RoundedCornerShape(10),
                     )
             ) {
-                Text(text = "Search" )
+                Text(text = "Search")
             }
         }
 
-//        KamelImage(){
-
-//        }
+        PlayerView()
 
 
     }
