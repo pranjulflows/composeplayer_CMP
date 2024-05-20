@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -34,7 +33,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("androidx.media3:media3-exoplayer:1.3.1")
+            implementation(libs.androidx.media3.exoplayer)
 
         }
         commonMain.dependencies {

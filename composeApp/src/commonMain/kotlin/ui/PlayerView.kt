@@ -1,7 +1,11 @@
 package ui
 
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.MarqueeSpacing
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,18 +41,24 @@ import org.jetbrains.compose.resources.painterResource
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import utils.loadImageWithKamel
+import utils.noRippleClickable
 
+enum class PlayPauseState(val icon: String) {
+    PLAY(ImagesRes.playIcon), PAUSE(ImagesRes.pauseIcon)
 
-@OptIn(ExperimentalResourceApi::class)
+}
+
+@OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PlayerView(modifier: Modifier = Modifier) {
     var sliderValue by remember { mutableStateOf(0f) }
+    var playPauseState by remember { mutableStateOf(PlayPauseState.PLAY) }
     Scaffold() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
         ) {
-            Text("MUSIC PLAYER")
+
 
             loadImageWithKamel(
                 modifier = Modifier.padding(horizontal = 56.dp, vertical = 16.dp).fillMaxWidth()
@@ -56,7 +66,11 @@ fun PlayerView(modifier: Modifier = Modifier) {
                     .border(shape = RoundedCornerShape(20.dp), width = 0.dp, color = Color.White),
                 resPath = "drawable/song_ph.png"
             )
-            Text("Song Name", style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold))
+            Text(
+                "Song Name Compose has finally added support for Marquee!",
+                modifier = Modifier.basicMarquee(delayMillis = 1_500),
+                style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            )
             Text(
                 "Artist Name", style = TextStyle(
                     fontSize = 18.sp, fontWeight = FontWeight.Normal, color = Color(0xFF117777)
@@ -67,26 +81,30 @@ fun PlayerView(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 value = sliderValue,
                 onValueChange = {
-
                     sliderValue = it
                 })
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 IconButton(onClick = {}) {
-                    loadImageWithKamel(ImagesRes.previousIc, modifier = Modifier.size(40.dp))
+                    loadImageWithKamel(ImagesRes.previousIcon, modifier = Modifier.size(40.dp))
                 }
 
+
                 loadImageWithKamel(
-                    ImagesRes.playIc,
+                    playPauseState.icon,
                     modifier = Modifier.paint(painterResource(DrawableResource(ImagesRes.playBg)))
                         .size(70.dp)
-                        .padding(16.dp)
+                        .padding(16.dp).noRippleClickable {
+                            playPauseState =
+                                if (playPauseState == PlayPauseState.PLAY) PlayPauseState.PAUSE else PlayPauseState.PLAY
+                        }
                 )
 
                 IconButton(onClick = {}) {
-                    loadImageWithKamel(ImagesRes.nextIc, modifier = Modifier.size(40.dp))
+                    loadImageWithKamel(ImagesRes.nextIcon, modifier = Modifier.size(40.dp))
                 }
 
             }

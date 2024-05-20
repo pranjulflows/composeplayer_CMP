@@ -1,5 +1,7 @@
 package utils
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import getResourceFile
 import io.kamel.core.config.KamelConfig
 import io.kamel.core.utils.File
@@ -30,4 +33,14 @@ fun loadImageWithKamel(resPath: String,modifier: Modifier=Modifier) {
     }
 
 
+}
+@Composable
+inline fun Modifier.noRippleClickable(
+    crossinline onClick: () -> Unit
+): Modifier = composed {
+    clickable(
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() }) {
+        onClick()
+    }
 }
