@@ -51,7 +51,13 @@ enum class PlayPauseState(val icon: String) {
 @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun PlayerView(modifier: Modifier = Modifier) {
+fun PlayerView(
+    modifier: Modifier = Modifier,
+    onPlayPause: () -> Unit,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+    onSeek: (Float) -> Unit
+) {
     var sliderValue by remember { mutableStateOf(0f) }
     var playPauseState by remember { mutableStateOf(PlayPauseState.PLAY) }
     Scaffold() {
@@ -68,7 +74,8 @@ fun PlayerView(modifier: Modifier = Modifier) {
             )
             Text(
                 "Song Name Compose has finally added support for Marquee!",
-                modifier = Modifier.basicMarquee(delayMillis = 1_500),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    .basicMarquee(delayMillis = 1_500),
                 style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold)
             )
             Text(
@@ -78,32 +85,32 @@ fun PlayerView(modifier: Modifier = Modifier) {
             )
 
             Slider(colors = SliderDefaults.colors(activeTrackColor = Color(0xFF9570FF)),
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
                 value = sliderValue,
                 onValueChange = {
                     sliderValue = it
+                    onSeek(sliderValue)
                 })
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = onPrevious) {
                     loadImageWithKamel(ImagesRes.previousIcon, modifier = Modifier.size(40.dp))
                 }
 
 
-                loadImageWithKamel(
-                    playPauseState.icon,
+                loadImageWithKamel(playPauseState.icon,
                     modifier = Modifier.paint(painterResource(DrawableResource(ImagesRes.playBg)))
-                        .size(70.dp)
-                        .padding(16.dp).noRippleClickable {
+                        .size(70.dp).padding(16.dp).noRippleClickable {
+                            onPlayPause()
                             playPauseState =
                                 if (playPauseState == PlayPauseState.PLAY) PlayPauseState.PAUSE else PlayPauseState.PLAY
-                        }
-                )
 
-                IconButton(onClick = {}) {
+                        })
+
+                IconButton(onClick = onNext) {
                     loadImageWithKamel(ImagesRes.nextIcon, modifier = Modifier.size(40.dp))
                 }
 
