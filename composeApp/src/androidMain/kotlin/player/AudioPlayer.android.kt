@@ -128,7 +128,7 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         mediaPlayer.play()
     }
 
-    actual fun onClear() {
+    actual fun onDispose() {
         mediaPlayer.release()
         mediaPlayer.removeListener(listener)
         stopUpdate()

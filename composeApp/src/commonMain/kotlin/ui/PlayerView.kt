@@ -31,6 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import core.ImagesRes
+import core.PlayPauseState
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -38,20 +41,19 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import utils.loadImageWithKamel
 import utils.noRippleClickable
 
-enum class PlayPauseState(val icon: String) {
-    PLAY(ImagesRes.playIcon),
-    PAUSE(ImagesRes.pauseIcon),
-}
-
+// *
+// This compose is not in use in the project.
+// */
 @OptIn(ExperimentalResourceApi::class, ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PlayerView(
+    songImage: String?,
     modifier: Modifier = Modifier,
     onPlayPause: () -> Unit,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
-    onSeek: (Float) -> Unit,
+    onSeek: (Double) -> Unit,
 ) {
     var sliderValue by remember { mutableStateOf(0f) }
     var playPauseState by remember { mutableStateOf(PlayPauseState.PLAY) }
@@ -60,29 +62,29 @@ fun PlayerView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize(),
         ) {
-            loadImageWithKamel(
-                modifier =
-                    Modifier.padding(horizontal = 56.dp, vertical = 16.dp).fillMaxWidth()
-                        .height(300.dp)
-                        .border(shape = RoundedCornerShape(20.dp), width = 0.dp, color = Color.White),
-                resPath = "drawable/song_ph.png",
-            )
-            Text(
-                "Song Name Compose has finally added support for Marquee!",
-                modifier =
-                    Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-                        .basicMarquee(delayMillis = 1_500),
-                style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
-            )
-            Text(
-                "Artist Name",
-                style =
-                    TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color(0xFF117777),
-                    ),
-            )
+            if (songImage == null) {
+                loadImageWithKamel(
+                    modifier =
+                        Modifier.padding(horizontal = 56.dp, vertical = 16.dp).fillMaxWidth()
+                            .height(300.dp)
+                            .border(
+                                shape = RoundedCornerShape(20.dp),
+                                width = 0.dp,
+                                color = Color.White,
+                            ),
+                    resPath = "drawable/song_ph.png",
+                )
+            } else {
+                KamelImage(
+                    asyncPainterResource(songImage),
+                    contentDescription = null,
+                    modifier =
+                        Modifier.padding(horizontal = 56.dp, vertical = 16.dp).fillMaxWidth()
+                            .height(300.dp)
+                            .border(shape = RoundedCornerShape(20.dp), width = 0.dp, color = Color.White),
+                )
+            }
+
 
             Slider(
                 colors = SliderDefaults.colors(activeTrackColor = Color(0xFF9570FF)),
@@ -90,7 +92,7 @@ fun PlayerView(
                 value = sliderValue,
                 onValueChange = {
                     sliderValue = it
-                    onSeek(sliderValue)
+                    onSeek(sliderValue.toDouble())
                 },
             )
 

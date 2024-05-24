@@ -15,7 +15,7 @@ expect class AudioPlayer(playerState: PlayerState) {
 
     fun addSongsUrls(songsUrl: List<String>)
 
-    fun onClear()
+    fun onDispose()
 
     fun onStop()
 }

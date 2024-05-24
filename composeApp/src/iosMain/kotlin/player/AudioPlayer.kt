@@ -1,6 +1,5 @@
 package player
 
-import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.AVPlayerItem
@@ -16,33 +15,30 @@ import platform.AVFoundation.removeTimeObserver
 import platform.AVFoundation.replaceCurrentItemWithPlayerItem
 import platform.AVFoundation.seekToTime
 import platform.AVFoundation.timeControlStatus
-import platform.CoreMedia.CMTime
 import platform.CoreMedia.CMTimeGetSeconds
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue
+import platform.Foundation.NSURL
 import platform.darwin.Float64
 import platform.darwin.NSEC_PER_SEC
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@OptIn(ExperimentalForeignApi::class)
 actual class AudioPlayer actual constructor(private val playerState: PlayerState) {
     private val playerItems = mutableListOf<AVPlayerItem>()
     private val avPlayer = AVPlayer()
 
     init {
-        setUpAudioSession()
+        initAVPlayer()
         playerState.isPlaying = avPlayer.timeControlStatus == AVPlayerTimeControlStatusPlaying
     }
 
     private var currentItemIndex = -1
     private lateinit var timeObserver: Any
 
-    @OptIn(ExperimentalForeignApi::class)
-    private val observer: (CValue<CMTime>) -> Unit = { time: CValue<CMTime> ->
-    }
-
-    private fun setUpAudioSession() {
+    private fun initAVPlayer() {
         if (currentItemIndex == -1) {
             onPlay(0)
         } else {
@@ -52,12 +48,22 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     }
 
     actual fun onPlay() {
-        avPlayer.play()
+        if (currentItemIndex == -1)
+            {
+                onPlay(0)
+            } else {
+            avPlayer.play()
+            playerState.isPlaying = true
+        }
     }
 
     actual fun onPlay(songIndex: Int) {
         playerState.isBuffering = true
-        avPlayer.play()
+        if (songIndex < playerItems.size)
+            {
+                currentItemIndex = songIndex
+                playSong(currentItemIndex)
+            }
     }
 
     @OptIn(ExperimentalForeignApi::class)
@@ -102,21 +108,51 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     }
 
     actual fun onPause() {
+        avPlayer.pause()
+        playerState.isPlaying = false
     }
 
     actual fun onNext() {
+        playerState.canNext = (currentItemIndex + 1) < playerItems.size
+        if (playerState.canNext)
+            {
+                currentItemIndex += 1
+                playSong(currentItemIndex)
+            }
     }
 
     actual fun onBack() {
+        when {
+            playerState.currentTime > 3 -> {
+                seekTo(0.0)
+            }
+            else -> {
+                playerState.canPrev = (currentItemIndex - 1) >= 0
+                if (playerState.canPrev) {
+                    currentItemIndex -= 1
+                    playSong(currentItemIndex)
+                }
+            }
+        }
     }
 
     actual fun seekTo(time: Double) {
+        playerState.isBuffering = true
+        val cmTime = CMTimeMakeWithSeconds(time, NSEC_PER_SEC.toInt())
+        avPlayer.currentItem?.seekToTime(time = cmTime, completionHandler = {
+            playerState.isBuffering = false
+        })
     }
 
     actual fun addSongsUrls(songsUrl: List<String>) {
+        val converted =
+            songsUrl.map {
+                NSURL.URLWithString(URLString = it)!!
+            }
+        playerItems.addAll(converted.map { AVPlayerItem(uRL = it) })
     }
 
-    actual fun onClear() {
+    actual fun onDispose() {
         stop()
     }
 

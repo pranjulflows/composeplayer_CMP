@@ -1,12 +1,16 @@
 package data
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class SongData(
-    val data: List<DataItem?>? = null,
+    val data: List<DataItem>? = null,
     val success: Boolean? = null,
 )
 
+@Serializable
 data class AllItem(
-    val image: List<Any?>? = null,
+    val image: List<ImageItem?>? = null,
     val role: String? = null,
     val name: String? = null,
     val id: String? = null,
@@ -14,24 +18,28 @@ data class AllItem(
     val url: String? = null,
 )
 
+@Serializable
 data class DownloadUrlItem(
-    val url: String? = null,
+    val url: String,
     val quality: String? = null,
 )
 
+@Serializable
 data class ImageItem(
     val url: String? = null,
     val quality: String? = null,
 )
 
+@Serializable
 data class Artists(
     val all: List<AllItem?>? = null,
-    val featured: List<Any?>? = null,
+    val featured: List<String?>? = null,
     val primary: List<PrimaryItem?>? = null,
 )
 
+@Serializable
 data class DataItem(
-    val lyricsId: Any? = null,
+    val lyricsId: String? = null,
     val image: List<ImageItem?>? = null,
     val copyright: String? = null,
     val year: String? = null,
@@ -51,12 +59,14 @@ data class DataItem(
     val id: String? = null,
 )
 
+@Serializable
 data class Album(
     val name: String? = null,
     val id: String? = null,
     val url: String? = null,
 )
 
+@Serializable
 data class PrimaryItem(
     val image: List<ImageItem?>? = null,
     val role: String? = null,
