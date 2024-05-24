@@ -8,9 +8,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 @Stable
-class PlayerState{
+class PlayerState {
     var isPlaying by mutableStateOf(false)
-    internal set
+        internal set
     var isBuffering by mutableStateOf(false)
     var currentTime: Long by mutableStateOf(0)
     var duration = 0L

@@ -11,7 +11,7 @@ import repository.ProductRepository
 
 class ProductViewModel : ViewModel() {
     private val _products = MutableStateFlow<List<ProductsItem>>(emptyList())
-     val products = _products.asStateFlow()
+    val products = _products.asStateFlow()
 
     fun getProducts() {
         viewModelScope.launch {
@@ -22,9 +22,6 @@ class ProductViewModel : ViewModel() {
                     Resources.Empty -> println("Loading Data....")
                 }
             }
-
-
         }
-
     }
 }

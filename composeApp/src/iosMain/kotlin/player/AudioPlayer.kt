@@ -23,7 +23,6 @@ import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue
 import platform.darwin.Float64
 import platform.darwin.NSEC_PER_SEC
-import platform.posix.index
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -41,7 +40,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
 
     @OptIn(ExperimentalForeignApi::class)
     private val observer: (CValue<CMTime>) -> Unit = { time: CValue<CMTime> ->
-
     }
 
     private fun setUpAudioSession() {
@@ -54,7 +52,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     }
 
     actual fun onPlay() {
-
         avPlayer.play()
     }
 
@@ -65,27 +62,31 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
 
     @OptIn(ExperimentalForeignApi::class)
     private fun playerTimer() {
-        timeObserver = avPlayer.addPeriodicTimeObserverForInterval(
-            CMTimeMakeWithSeconds(1.0, NSEC_PER_SEC.toInt()), null
-        ) { time ->
-            playerState.isBuffering = avPlayer.currentItem?.isPlaybackLikelyToKeepUp() != true
-            playerState.isPlaying = avPlayer.timeControlStatus == AVPlayerTimeControlStatusPlaying
-            val rawTime: Float64 = CMTimeGetSeconds(time)
-            val parsedTime = rawTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
-            playerState.currentTime = parsedTime
-            if (avPlayer.currentItem != null) {
-                val cmTime = CMTimeGetSeconds(avPlayer.currentItem!!.duration)
-                playerState.duration =
-                    if (cmTime.isNaN()) 0 else cmTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
+        timeObserver =
+            avPlayer.addPeriodicTimeObserverForInterval(
+                CMTimeMakeWithSeconds(1.0, NSEC_PER_SEC.toInt()),
+                null,
+            ) { time ->
+                playerState.isBuffering = avPlayer.currentItem?.isPlaybackLikelyToKeepUp() != true
+                playerState.isPlaying = avPlayer.timeControlStatus == AVPlayerTimeControlStatusPlaying
+                val rawTime: Float64 = CMTimeGetSeconds(time)
+                val parsedTime = rawTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
+                playerState.currentTime = parsedTime
+                if (avPlayer.currentItem != null) {
+                    val cmTime = CMTimeGetSeconds(avPlayer.currentItem!!.duration)
+                    playerState.duration =
+                        if (cmTime.isNaN()) 0 else cmTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
+                }
             }
-        }
 
-        NSNotificationCenter.defaultCenter.addObserverForName(name = AVPlayerItemDidPlayToEndTimeNotification,
+        NSNotificationCenter.defaultCenter.addObserverForName(
+            name = AVPlayerItemDidPlayToEndTimeNotification,
             `object` = avPlayer.currentItem,
             queue = NSOperationQueue.mainQueue,
             usingBlock = {
                 onNext()
-            })
+            },
+        )
     }
 
     private fun playSong(songIndex: Int) {
@@ -98,8 +99,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
             avPlayer.replaceCurrentItemWithPlayerItem(playerItems[songIndex])
             avPlayer.play()
         }
-
-
     }
 
     actual fun onPause() {
@@ -130,6 +129,5 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         if (::timeObserver.isInitialized) avPlayer.removeTimeObserver(timeObserver)
         avPlayer.pause()
         avPlayer.currentItem?.seekToTime(CMTimeMakeWithSeconds(0.0, NSEC_PER_SEC.toInt()))
-
     }
 }

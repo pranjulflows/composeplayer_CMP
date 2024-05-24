@@ -3,7 +3,6 @@ import musicplayerkmp.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.io.FileOutputStream
 
-
 @OptIn(ExperimentalResourceApi::class)
 public actual suspend fun getResourceFile(fileResourcePath: String): File {
     val file = java.io.File.createTempFile("temp", ".${fileResourcePath.substringAfterLast(".")}")

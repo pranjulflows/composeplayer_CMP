@@ -12,18 +12,25 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object KtorfitClient {
-    private val httpClient = HttpClient {
-        install(ContentNegotiation) {
-            json(Json { isLenient = true; ignoreUnknownKeys = true })
+    private val httpClient =
+        HttpClient {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    },
+                )
+            }
+            install(Logging) {
+                logger = Logger.DEFAULT
+                level = LogLevel.ALL
+            }
         }
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.ALL
-        }
-    }
-    val ktorfit = Ktorfit.Builder().baseUrl(baseUrl).converterFactories(ResponseConverterFactory())
+    val ktorfit =
+        Ktorfit.Builder().baseUrl(baseUrl).converterFactories(ResponseConverterFactory())
 //        .addCallAdapterFactory(ApiResponseConverterFactory.create()) // for sandwich
-        .httpClient(httpClient).build()
+            .httpClient(httpClient).build()
 
     val api = ktorfit.create<ApiService>()
 }

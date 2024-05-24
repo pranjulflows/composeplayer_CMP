@@ -34,8 +34,6 @@ fun ProductComposable() {
         viewmodel.getProducts()
     }
     MaterialTheme {
-
-
         println(products.value.toString())
         var showContent by remember { mutableStateOf(false) }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -52,29 +50,28 @@ fun ProductComposable() {
                 items(products.value.size) { itemIndex ->
 
                     Column(
-                        Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+                        Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text("Product Brand: ${products.value[itemIndex].brand}")
                         Text("Product Name: ${products.value[itemIndex].title}")
                         Text("Product Description: ${products.value[itemIndex].description}")
                         Text("Product Price: \$ ${products.value[itemIndex].price}")
-                        HorizontalPager(state = rememberPagerState(pageCount = {
-                            products.value[itemIndex].images.size
-                        })) {
+                        HorizontalPager(
+                            state =
+                                rememberPagerState(pageCount = {
+                                    products.value[itemIndex].images.size
+                                }),
+                        ) {
                             KamelImage(
                                 modifier = Modifier.fillMaxWidth().height(200.dp),
                                 resource = asyncPainterResource(products.value[itemIndex].images[it]),
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
-
                     }
                 }
-
-
             }
-
-
         }
     }
 }

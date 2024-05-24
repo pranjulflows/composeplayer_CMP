@@ -11,45 +11,44 @@ import kotlinx.coroutines.launch
 import org.macamps.musicplayer.app.App
 
 actual class AudioPlayer actual constructor(private val playerState: PlayerState) {
-
     private val mediaPlayer = ExoPlayer.Builder(App.getAppInstance().applicationContext).build()
 
     private val mediaItems = mutableListOf<MediaItem>()
     private var currentItemIndex = -1
-    private val listener = object : Player.Listener {
+    private val listener =
+        object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                when (playbackState) {
+                    Player.STATE_IDLE -> {
+                        playerState.isPlaying = false
+                    }
 
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            when (playbackState) {
-                Player.STATE_IDLE -> {
-                    playerState.isPlaying = false
-                }
+                    Player.STATE_BUFFERING -> {
+                        playerState.isBuffering = true
+                    }
 
-                Player.STATE_BUFFERING -> {
-                    playerState.isBuffering = true
-                }
+                    Player.STATE_ENDED -> {
+                        if (playerState.isPlaying) {
+                            onNext()
+                        }
+                    }
 
-                Player.STATE_ENDED -> {
-                    if (playerState.isPlaying) {
-                        onNext()
+                    Player.STATE_READY -> {
+                        playerState.isBuffering = false
+                        playerState.duration = mediaPlayer.duration / 1000
                     }
                 }
+            }
 
-                Player.STATE_READY -> {
-                    playerState.isBuffering = false
-                    playerState.duration = mediaPlayer.duration / 1000
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                playerState.isPlaying = isPlaying
+                if (isPlaying) {
+                    scheduleUpdate()
+                } else {
+                    stopUpdate()
                 }
             }
         }
-
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            playerState.isPlaying = isPlaying
-            if (isPlaying) {
-                scheduleUpdate()
-            } else {
-                stopUpdate()
-            }
-        }
-    }
 
     private var updateJob: Job? = null
 
@@ -59,12 +58,13 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
 
     private fun scheduleUpdate() {
         stopUpdate()
-        updateJob = CoroutineScope(Dispatchers.Main).launch {
-            while (true) {
-                playerState.currentTime = mediaPlayer.currentPosition / 1000
-                delay(1000)
+        updateJob =
+            CoroutineScope(Dispatchers.Main).launch {
+                while (true) {
+                    playerState.currentTime = mediaPlayer.currentPosition / 1000
+                    delay(1000)
+                }
             }
-        }
     }
 
     actual fun onPlay() {

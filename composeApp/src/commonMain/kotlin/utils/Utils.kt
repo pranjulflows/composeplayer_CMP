@@ -11,36 +11,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import getResourceFile
-import io.kamel.core.config.KamelConfig
 import io.kamel.core.utils.File
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import io.kamel.image.config.svgDecoder
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun loadImageWithKamel(resPath: String,modifier: Modifier=Modifier) {
+fun loadImageWithKamel(
+    resPath: String,
+    modifier: Modifier = Modifier,
+) {
     val scope = rememberCoroutineScope()
     var file: File? by remember { mutableStateOf(null) }
     scope.launch {
         file = getResourceFile(resPath)
-
     }
     file?.let {
-        KamelImage(asyncPainterResource(it), contentDescription = null, modifier=modifier)
-
+        KamelImage(asyncPainterResource(it), contentDescription = null, modifier = modifier)
     }
-
-
 }
+
 @Composable
-inline fun Modifier.noRippleClickable(
-    crossinline onClick: () -> Unit
-): Modifier = composed {
-    clickable(
-        indication = null,
-        interactionSource = remember { MutableInteractionSource() }) {
-        onClick()
+inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier =
+    composed {
+        clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() },
+        ) {
+            onClick()
+        }
     }
-}
