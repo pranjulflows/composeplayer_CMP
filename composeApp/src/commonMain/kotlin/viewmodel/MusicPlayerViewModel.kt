@@ -1,8 +1,9 @@
 package viewmodel
 
 import Resources
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import data.DataItem
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

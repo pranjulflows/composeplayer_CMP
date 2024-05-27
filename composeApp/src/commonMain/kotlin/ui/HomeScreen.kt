@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,12 +23,8 @@ import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,19 +38,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.compositionUniqueId
+import androidx.lifecycle.viewmodel.compose.viewModel
 import core.ImagesRes
 import core.PlayPauseState
-import data.DataItem
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import player.AudioPlayer
-import player.PlayerState
 import player.rememberPlayerState
 import utils.loadImageWithKamel
 import viewmodel.MusicPlayerViewModel
@@ -66,8 +57,8 @@ import viewmodel.MusicPlayerViewModel
 fun HomeScreen() {
     val playerState = rememberPlayerState()
     val player = remember { AudioPlayer(playerState) }
-    val viewModel =
-        getViewModel(MusicPlayerViewModel(), viewModelFactory { MusicPlayerViewModel() })
+    val viewModel = viewModel<MusicPlayerViewModel>()
+
     val songData = viewModel.song.collectAsState()
     var sliderValue by remember { mutableStateOf(0f) }
     val scope = rememberCoroutineScope()
@@ -89,8 +80,7 @@ fun HomeScreen() {
             Text(text = "Compose Player")
         }
         VerticalPager(state = rememberPagerState(pageCount = { 5 })) {
-            PlayerScreen(
-                songName = "${songData?.value?.name}",
+            PlayerScreen(songName = "${songData?.value?.name}",
                 songImage = songData.value?.image?.get(2)?.url,
                 onPlayPause = { state ->
 
@@ -119,61 +109,60 @@ fun PlayerScreen(
 ) {
     var playPauseState by remember { mutableStateOf(PlayPauseState.PLAY) }
 
-    Scaffold(
-        bottomBar = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Scaffold(bottomBar = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Text(
-                    "Artist Name",
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color(0xFF117777),
-                    ),
-                )
-                Text(
-                    songName,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-                        .basicMarquee(delayMillis = 1_500),
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
-                )
+            Text(
+                "Artist Name",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color(0xFF117777),
+                ),
+            )
+            Text(
+                songName,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    .basicMarquee(delayMillis = 1_500),
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+            )
 
-                Slider(
-                    colors = SliderDefaults.colors(activeTrackColor = Color(0xFF9570FF)),
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                    value = sliderValue,
-                    onValueChange = {
+            Slider(
+                colors = SliderDefaults.colors(activeTrackColor = Color(0xFF9570FF)),
+                modifier = Modifier.padding(horizontal = 20.dp),
+                value = sliderValue,
+                onValueChange = {
 //                    sliderValue = it
-                        onSeek(sliderValue.toDouble())
-                    },
-                )
+                    onSeek(sliderValue.toDouble())
+                },
+            )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceAround,
-                ) {
-                    IconButton(onClick = {
-                        playPauseState =
-                            if (playPauseState == PlayPauseState.PLAY) PlayPauseState.PAUSE else PlayPauseState.PLAY
-                        onPlayPause(playPauseState)
-                    }) {
-                        loadImageWithKamel(
-                            playPauseState.icon,
-                            modifier = Modifier.padding(horizontal = 10.dp).size(55.dp)
-                                .padding(vertical = 10.dp),
-                        )
-                    }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround,
+            ) {
+                IconButton(onClick = {
+                    playPauseState =
+                        if (playPauseState == PlayPauseState.PLAY) PlayPauseState.PAUSE else PlayPauseState.PLAY
+                    onPlayPause(playPauseState)
+                }) {
+                    loadImageWithKamel(
+                        playPauseState.icon,
+                        modifier = Modifier.padding(horizontal = 10.dp).size(55.dp)
+                            .padding(vertical = 10.dp),
+                    )
+                }
 
-                    IconButton(onClick = onSearch) {
-                        loadImageWithKamel(
-                            ImagesRes.searchIcon,
-                            modifier = Modifier.size(40.dp),
-                        )
-                    }
+                IconButton(onClick = onSearch) {
+                    loadImageWithKamel(
+                        ImagesRes.searchIcon,
+                        modifier = Modifier.size(40.dp),
+                    )
                 }
             }
-        }) {
+        }
+    }) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
                 songImage?.let {
@@ -181,8 +170,7 @@ fun PlayerScreen(
                 } ?: run {
                     loadImageWithKamel(
                         modifier = Modifier.padding(horizontal = 56.dp, vertical = 16.dp)
-                            .fillMaxWidth()
-                            .height(300.dp).border(
+                            .fillMaxWidth().height(300.dp).border(
                                 shape = RoundedCornerShape(20.dp),
                                 width = 0.dp,
                                 color = Color.White,

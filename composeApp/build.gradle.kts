@@ -97,6 +97,8 @@ kotlin {
             implementation(libs.kamel.image)
             implementation(libs.compose.multiplatform.media.player)
             implementation(libs.ktorfit.lib)
+            implementation(libs.navigation.compose)
+            implementation(libs.lifecycle.viewmodel.compose)
 
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -116,11 +118,11 @@ kotlin {
             implementation(libs.mvvm.flow.compose) // api mvvm-flow, binding extensions for Compose Multiplatform
             implementation(libs.mvvm.livedata.compose) // api mvvm-livedata, binding extensions for Compose Multiplatform
 
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenModel)
-            implementation(libs.voyager.bottomSheetNavigator)
-            implementation(libs.voyager.transitions)
-            implementation(libs.voyager.tabNavigator)
+//            implementation(libs.voyager.navigator)
+//            implementation(libs.voyager.screenModel)
+//            implementation(libs.voyager.bottomSheetNavigator)
+//            implementation(libs.voyager.transitions)
+//            implementation(libs.voyager.tabNavigator)
 
 //            implementation(libs.sandwich)
 //            implementation(libs.sandwich.ktor)

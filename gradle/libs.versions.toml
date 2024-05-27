@@ -21,7 +21,9 @@ ktorClientSerialization = "2.3.10"
 ktorfitLib = "2.0.0-beta1"
 koin="1.1.0"
 landscapistCoil3 = "2.3.3"
+lifecycleViewmodelCompose = "2.8.0"
 media3Exoplayer = "1.3.1"
+navigationCompose = "2.7.0-alpha07"
 sandwichKtor = "2.0.7"
 mvvmCompose = "0.16.1"
 voyager = "1.0.0"
@@ -53,6 +55,8 @@ ktorfit-converters-response = { module = "de.jensklingenberg.ktorfit:ktorfit-con
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfitLib" }
 koin-compose = {module="io.insert-koin:koin-compose", version.ref = "koin"}
 landscapist-coil3 = { module = "com.github.skydoves:landscapist-coil3", version.ref = "landscapistCoil3" }
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 sandwich = { module = "com.github.skydoves:sandwich", version.ref = "sandwichKtor" }
 sandwich-ktor = { module = "com.github.skydoves:sandwich-ktor", version.ref = "sandwichKtor" }
 sandwich-ktorfit = { module = "com.github.skydoves:sandwich-ktorfit", version.ref = "sandwichKtor" }
