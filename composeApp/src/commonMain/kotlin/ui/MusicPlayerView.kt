@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+//import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -38,7 +38,10 @@ import viewmodel.MusicPlayerViewModel
 @Composable
 @Preview
 fun MusicPlayer() {
-    val viewModel = viewModel { MusicPlayerViewModel() }
+//    val viewModel = viewModel { MusicPlayerViewModel() }
+    val viewModel =
+        getViewModel(MusicPlayerViewModel(), viewModelFactory { MusicPlayerViewModel() })
+
     val song = viewModel.song.collectAsState()
     val image = remember { mutableStateOf<String?>(null) }
     val playerState = rememberPlayerState()

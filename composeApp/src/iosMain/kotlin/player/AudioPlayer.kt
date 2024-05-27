@@ -80,7 +80,7 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
                 playerState.currentTime = parsedTime
                 if (avPlayer.currentItem != null) {
                     val cmTime = CMTimeGetSeconds(avPlayer.currentItem!!.duration)
-                    playerState.duration =
+                    playerState.totalDuration =
                         if (cmTime.isNaN()) 0 else cmTime.toDuration(DurationUnit.SECONDS).inWholeSeconds
                 }
             }
@@ -98,6 +98,7 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
     private fun playSong(songIndex: Int) {
         if (songIndex >= 0 && songIndex < playerItems.size) {
             stop()
+            playerTimer()
             playerState.isBuffering = true
             playerState.currentItemIndex = currentItemIndex
             currentItemIndex = songIndex
@@ -166,4 +167,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         avPlayer.pause()
         avPlayer.currentItem?.seekToTime(CMTimeMakeWithSeconds(0.0, NSEC_PER_SEC.toInt()))
     }
+
+
 }

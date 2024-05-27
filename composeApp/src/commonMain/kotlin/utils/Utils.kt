@@ -10,6 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import getResourceFile
 import io.kamel.core.utils.File
 import io.kamel.image.KamelImage
@@ -31,6 +32,18 @@ fun loadImageWithKamel(
     }
 }
 
+val pastelColors = listOf(
+    Color(0xFF77DD77), // Pastel Green
+    Color(0xFFAEC6CF), // Pastel Blue
+    Color(0xFFF49AC2), // Pastel Pink
+    Color(0xFFFFB347), // Pastel Orange
+    Color(0xFFB39EB5), // Pastel Purple
+    Color(0xFFD5A6BD), // Pastel Lavender
+    Color(0xFFFFDF6B), // Pastel Yellow
+    Color(0xFFFF6961), // Pastel Red
+    Color(0xFFD7A9E3), // Pastel Violet
+    Color(0xFF93C572)  // Pastel Lime Green
+)
 @Composable
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier =
     composed {

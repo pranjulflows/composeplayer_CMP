@@ -35,7 +35,7 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
 
                     Player.STATE_READY -> {
                         playerState.isBuffering = false
-                        playerState.duration = mediaPlayer.duration / 1000
+                        playerState.totalDuration = mediaPlayer.duration / 1000
                     }
                 }
             }
@@ -51,7 +51,6 @@ actual class AudioPlayer actual constructor(private val playerState: PlayerState
         }
 
     private var updateJob: Job? = null
-
     private fun stopUpdate() {
         updateJob?.cancel()
     }

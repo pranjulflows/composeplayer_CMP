@@ -13,7 +13,7 @@ class PlayerState {
         internal set
     var isBuffering by mutableStateOf(false)
     var currentTime: Long by mutableStateOf(0)
-    var duration = 0L
+    var totalDuration = 0L
     var currentItemIndex = -1
     var canNext by mutableStateOf(false)
     var canPrev by mutableStateOf(false)

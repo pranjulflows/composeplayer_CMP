@@ -97,8 +97,8 @@ kotlin {
             implementation(libs.kamel.image)
             implementation(libs.compose.multiplatform.media.player)
             implementation(libs.ktorfit.lib)
-            implementation(libs.navigation.compose)
-            implementation(libs.lifecycle.viewmodel.compose)
+//            implementation(libs.navigation.compose)
+//            implementation(libs.lifecycle.viewmodel.compose)
 
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -179,4 +179,7 @@ android {
             add("kspIosSimulatorArm64Test", this)
         }
     }
+}
+dependencies {
+    implementation(libs.androidx.palette.ktx)
 }
